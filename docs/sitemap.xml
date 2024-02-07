@@ -2,8 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://jhuntley.github.io/posts/first_post/</loc>
-  </url><url>
     <loc>https://jhuntley.github.io/categories/</loc>
   </url><url>
     <loc>https://jhuntley.github.io/</loc>
@@ -11,5 +9,7 @@
     <loc>https://jhuntley.github.io/posts/</loc>
   </url><url>
     <loc>https://jhuntley.github.io/tags/</loc>
+  </url><url>
+    <loc>https://jhuntley.github.io/posts/first_post/</loc>
   </url>
 </urlset>

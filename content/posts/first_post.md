@@ -1,4 +1,12 @@
-# This is this blog's first post
+---
+title: There Was a Fox 
+description:
+date: Feb. 2nd, 2024
+tldr: Introducing...
+draft: 
+tags: 
+---
+### This is this blog's first post
 
 ## You're about to read something profound
 
