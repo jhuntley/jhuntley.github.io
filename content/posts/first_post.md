@@ -1,7 +1,7 @@
 ---
 title: There Was a Fox 
-description:
-date: Feb. 2nd, 2024
+description: Once upon a time there was a young fox named roger who ate too many apples and became a parrot.
+date: "2024-02-06T13:43:40"
 tldr: Introducing...
 draft: 
 tags: 
