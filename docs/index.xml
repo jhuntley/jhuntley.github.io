@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Jamin Huntley</title>
+    <title>jhuntley.github.io</title>
     <link>https://jhuntley.github.io/</link>
-    <description>Recent content on Jamin Huntley</description>
+    <description>Recent content on jhuntley.github.io</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 06 Feb 2024 13:43:40 +0000</lastBuildDate>
     <atom:link href="https://jhuntley.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>There Was a Fox</title>
+      <title>Current Projects</title>
       <link>https://jhuntley.github.io/posts/first_post/</link>
       <pubDate>Tue, 06 Feb 2024 13:43:40 +0000</pubDate>
       <guid>https://jhuntley.github.io/posts/first_post/</guid>
-      <description>This is this blog&amp;rsquo;s first post You&amp;rsquo;re about to read something profound Once upon a time there was a young fox named roger who ate too many apples and became a parrot.&#xA;var fox --&amp;gt; parrot &amp;lt;-- SQUAWK</description>
+      <description>Current Projects Since this is the first post on this blog, I figured it might be a good idea to outline the current projects that I&amp;rsquo;m working on.&#xA;Unnanounced Unity ECS project I&amp;rsquo;m co-developing this project with my brother and it aims to fuse together card-playing and dungeon-crawling mechanics to create a unique player experience. We&amp;rsquo;re developing it on the Unity platform and making use of their new-ish Entiy Component System (ECS) for all-around performance improvements and a novel coding experience.</description>
     </item>
   </channel>
 </rss>
