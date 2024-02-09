@@ -6,21 +6,21 @@
     <description>Recent content in Posts on jhuntley.github.io</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 06 Feb 2024 13:43:40 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 08 Feb 2024 13:43:40 +0000</lastBuildDate>
     <atom:link href="https://jhuntley.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Game of Life - Rust &#43; WebAssembly</title>
+      <link>https://jhuntley.github.io/posts/game_of_life/</link>
+      <pubDate>Thu, 08 Feb 2024 13:43:40 +0000</pubDate>
+      <guid>https://jhuntley.github.io/posts/game_of_life/</guid>
+      <description>Making Game of Life with Rust and WebAssembly Thanks to a fantastic tutorial and the help of a friend I was able dive into creating Conway&amp;rsquo;s Game of Life for the first time. I&amp;rsquo;m just beginning my journey into Rust and I think this was a great first project to see the language in action while also learning about WebAssembly.&#xA;The most challenging part of the implementation was getting the WebAssembly to load within the Hugo framework.</description>
+    </item>
     <item>
       <title>Current Projects</title>
       <link>https://jhuntley.github.io/posts/first_post/</link>
       <pubDate>Tue, 06 Feb 2024 13:43:40 +0000</pubDate>
       <guid>https://jhuntley.github.io/posts/first_post/</guid>
       <description>Current Projects Since this is the first post on this blog, I figured it might be a good idea to outline the current projects that I&amp;rsquo;m working on.&#xA;Unnanounced Unity ECS project I&amp;rsquo;m co-developing this project with my brother and it aims to fuse together card-playing and dungeon-crawling mechanics to create a unique player experience. We&amp;rsquo;re developing it on the Unity platform and making use of their new-ish Entiy Component System (ECS) for all-around performance improvements and a novel coding experience.</description>
-    </item>
-    <item>
-      <title>Game of Life - Rust &#43; WebAssembly</title>
-      <link>https://jhuntley.github.io/posts/game_of_life/</link>
-      <pubDate>Tue, 06 Feb 2024 13:43:40 +0000</pubDate>
-      <guid>https://jhuntley.github.io/posts/game_of_life/</guid>
-      <description>Making Game of Life with Rust and WebAssembly Thanks to a fantastic tutorial and the help of a friend I was able dive into creating Conway&amp;rsquo;s Game of Life for the first time. I&amp;rsquo;m just beginning my journey into Rust and I think this was a great first project to see the language in action while also learning about WebAssembly.&#xA;The most challenging part of the implementation was getting the WebAssembly to load within the Hugo framework.</description>
     </item>
   </channel>
 </rss>

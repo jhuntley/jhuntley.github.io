@@ -1,7 +1,7 @@
 ---
 title: Game of Life - Rust + WebAssembly
 description:
-date: "2024-02-06T13:43:40"
+date: "2024-02-08T13:43:40"
 draft: 
 tags: 
 ---
