@@ -1,1 +1,3 @@
 <script type="text/javascript" src="{{.Get "src"}}"></script>
+
+<pre id="game-of-life-canvas"></pre>

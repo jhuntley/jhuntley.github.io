@@ -6,4 +6,4 @@ draft:
 tags: 
 ---
 
-{{< javascript-file src="./bootstrap.js" >}}
+{{< game-of-life-display src="./bootstrap.js" >}}
