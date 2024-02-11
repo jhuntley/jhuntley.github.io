@@ -6,8 +6,15 @@
     <description>Recent content on jhuntley.github.io</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 08 Feb 2024 13:43:40 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 11 Feb 2024 13:43:40 +0000</lastBuildDate>
     <atom:link href="https://jhuntley.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Netcode for Entities - Spawning Player Cameras</title>
+      <link>https://jhuntley.github.io/posts/unity_netcode_camera/</link>
+      <pubDate>Sun, 11 Feb 2024 13:43:40 +0000</pubDate>
+      <guid>https://jhuntley.github.io/posts/unity_netcode_camera/</guid>
+      <description>Leveraging Unity&amp;rsquo;s Megacity Multiplayer Sample After struggling to implement my own solution, I decided to dive into Unity&amp;rsquo;s Megacity Multiplayer sample and see if there was anything in there that might be able to help me get the cameras running. It took me a little while to wrap my head around the codebase, but it turns out thay they were using a hybrid solution that was quite similar to what I had tried.</description>
+    </item>
     <item>
       <title>Game of Life - Rust &#43; WebAssembly</title>
       <link>https://jhuntley.github.io/posts/game_of_life/</link>
@@ -21,13 +28,6 @@
       <pubDate>Tue, 06 Feb 2024 13:43:40 +0000</pubDate>
       <guid>https://jhuntley.github.io/posts/first_post/</guid>
       <description>Current Projects Since this is the first post on this blog, I figured it might be a good idea to outline the current projects that I&amp;rsquo;m working on.&#xA;Unnanounced Unity ECS project I&amp;rsquo;m co-developing this project with my brother and it aims to fuse together card-playing and dungeon-crawling mechanics to create a unique player experience. We&amp;rsquo;re developing it on the Unity platform and making use of their new-ish Entiy Component System (ECS) for all-around performance improvements and a novel coding experience.</description>
-    </item>
-    <item>
-      <title>Netcode for Entities - Spawning Player Cameras</title>
-      <link>https://jhuntley.github.io/posts/unity_netcode_camera/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://jhuntley.github.io/posts/unity_netcode_camera/</guid>
-      <description>Leveraging Unity&amp;rsquo;s Megacity Multiplayer Sample After struggling to implement my own solution, I decided to dive into Unity&amp;rsquo;s Megacity Multiplayer sample and see if there was anything in there that might be able to help me get the cameras running. It took me a little while to wrap my head around the codebase, but it turns out thay they were using a hybrid solution that was quite similar to what I had tried.</description>
     </item>
   </channel>
 </rss>

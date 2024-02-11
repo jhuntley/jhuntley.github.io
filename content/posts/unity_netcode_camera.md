@@ -1,7 +1,7 @@
 ---
 title: Netcode for Entities - Spawning Player Cameras 
 description: A short post detailing how to spawn cameras for individual players in Unity using their Entity Component System and Netcode for Entities
-date: "2024-02-011T13:43:40"
+date: "2024-02-11T13:43:40"
 draft: false
 tags: 
 ---
@@ -29,7 +29,7 @@ namespace Unity.Megacity.CameraManagement
     [BurstCompile]
     [UpdateAfter(typeof(TransformSystemGroup))]
     [WorldSystemFilter(WorldSystemFilterFlags.LocalSimulation | WorldSystemFilterFlags.ClientSimulation)]
-    public partial struct PlayerCameraTargetUpdater : ISystem
+    public partial struct Sys_PlayerCameraTargetUpdater : ISystem
     {
         public EntityQuery m_CameraTarget;
         public void OnCreate(ref SystemState state)
@@ -119,8 +119,53 @@ namespace Pool
 }
 ```
 
-## Intermission
+## Phase Two
 
 Alright, so we've created three pieces of code now: 1) the PlayerCameraTarget component that will position and rotation information that 2) the ISystem PlayerCameraTargetUpdated will search for and then pass on to 3) the Hybrid Camera Manager (HCM) singleton that exposes two key functions: SetPlayerCameraPosition and SetPlayerCameraRotation. Those functions, when called via the HCM singleton, will update the transform of a camera that is tethered to the player in question.
 
+The next step is to make sure that there is actual position and rotation information contained in the PlayerCameraTarget component. We'll get this information into the component via a script called Sys_PreparePlayerCameraTarget. I'm going to use the version from the Megacity sample with minimal changes (just changing a few variable names to fit my conventions):
 
+```
+using Unity.Burst;
+using Unity.Entities;
+using Unity.Transforms;
+
+namespace Unity.Megacity.CameraManagement
+{
+    [BurstCompile]
+    [UpdateBefore(typeof(TransformSystemGroup))]
+    [UpdateBefore(typeof(PlayerCameraTargetUpdater))]
+    [WorldSystemFilter(WorldSystemFilterFlags.LocalSimulation | WorldSystemFilterFlags.ClientSimulation)]
+    public partial struct PreparePlayerCameraTarget : ISystem
+    {
+        [BurstCompile]
+        partial struct UpdatePlayerCameraTargetDataJob : IJobEntity
+        {
+            [BurstCompile]
+            public void Execute(ref PlayerCameraTarget playerCameraTarget, in LocalToWorld localToWorld)
+            {
+                playerCameraTarget.Position = localToWorld.Position;
+                playerCameraTarget.Rotation = localToWorld.Rotation;
+            }
+        }
+       
+        [BurstCompile]
+        public void OnCreate(ref SystemState state)
+        {
+            state.RequireForUpdate<PlayerCameraTarget>();
+        }
+       
+        [BurstCompile]
+        public void OnUpdate(ref SystemState state)
+        {
+            var updatePlayerTargetDataJob = new UpdatePlayerCameraTargetDataJob();
+            state.Dependency = updatePlayerTargetDataJob.ScheduleParallel(state.Dependency);
+            state.CompleteDependency();
+        }
+    }
+}
+```
+
+## Conclusion
+
+And that pretty much does it! The last two thing you have to do are make sure that you drag in the actual camera gameobject into the exposed field on the Hybrid Camera Manager and also ensure that you've added the relevant authoring script (Auth_PlayerCameraTarget, in my case) to your player character.

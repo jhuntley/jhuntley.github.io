@@ -8,8 +8,8 @@
 <meta property="og:description" content="A short post detailing how to spawn cameras for individual players in Unity using their Entity Component System and Netcode for Entities" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://jhuntley.github.io/posts/unity_netcode_camera/" /><meta property="article:section" content="posts" />
-
-
+<meta property="article:published_time" content="2024-02-11T13:43:40+00:00" />
+<meta property="article:modified_time" content="2024-02-11T13:43:40+00:00" />
 
 <meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Netcode for Entities - Spawning Player Cameras"/>
 <meta name="twitter:description" content="A short post detailing how to spawn cameras for individual players in Unity using their Entity Component System and Netcode for Entities"/>
@@ -44,7 +44,7 @@
 	<article>
 		<div class="title">
 			<h1 class="title">Netcode for Entities - Spawning Player Cameras</h1>
-			<div class="meta">Posted on Jan 1, 0001</div>
+			<div class="meta">Posted on Feb 11, 2024</div>
 		</div>
 		
 
@@ -66,7 +66,7 @@ namespace Unity.Megacity.CameraManagement
     [BurstCompile]
     [UpdateAfter(typeof(TransformSystemGroup))]
     [WorldSystemFilter(WorldSystemFilterFlags.LocalSimulation | WorldSystemFilterFlags.ClientSimulation)]
-    public partial struct PlayerCameraTargetUpdater : ISystem
+    public partial struct Sys_PlayerCameraTargetUpdater : ISystem
     {
         public EntityQuery m_CameraTarget;
         public void OnCreate(ref SystemState state)
@@ -150,8 +150,49 @@ namespace Pool
         }
     }
 }
-</code></pre><h2 id="intermission">Intermission</h2>
+</code></pre><h2 id="phase-two">Phase Two</h2>
 <p>Alright, so we&rsquo;ve created three pieces of code now: 1) the PlayerCameraTarget component that will position and rotation information that 2) the ISystem PlayerCameraTargetUpdated will search for and then pass on to 3) the Hybrid Camera Manager (HCM) singleton that exposes two key functions: SetPlayerCameraPosition and SetPlayerCameraRotation. Those functions, when called via the HCM singleton, will update the transform of a camera that is tethered to the player in question.</p>
+<p>The next step is to make sure that there is actual position and rotation information contained in the PlayerCameraTarget component. We&rsquo;ll get this information into the component via a script called Sys_PreparePlayerCameraTarget. I&rsquo;m going to use the version from the Megacity sample with minimal changes (just changing a few variable names to fit my conventions):</p>
+<pre tabindex="0"><code>using Unity.Burst;
+using Unity.Entities;
+using Unity.Transforms;
+
+namespace Unity.Megacity.CameraManagement
+{
+    [BurstCompile]
+    [UpdateBefore(typeof(TransformSystemGroup))]
+    [UpdateBefore(typeof(PlayerCameraTargetUpdater))]
+    [WorldSystemFilter(WorldSystemFilterFlags.LocalSimulation | WorldSystemFilterFlags.ClientSimulation)]
+    public partial struct PreparePlayerCameraTarget : ISystem
+    {
+        [BurstCompile]
+        partial struct UpdatePlayerCameraTargetDataJob : IJobEntity
+        {
+            [BurstCompile]
+            public void Execute(ref PlayerCameraTarget playerCameraTarget, in LocalToWorld localToWorld)
+            {
+                playerCameraTarget.Position = localToWorld.Position;
+                playerCameraTarget.Rotation = localToWorld.Rotation;
+            }
+        }
+       
+        [BurstCompile]
+        public void OnCreate(ref SystemState state)
+        {
+            state.RequireForUpdate&lt;PlayerCameraTarget&gt;();
+        }
+       
+        [BurstCompile]
+        public void OnUpdate(ref SystemState state)
+        {
+            var updatePlayerTargetDataJob = new UpdatePlayerCameraTargetDataJob();
+            state.Dependency = updatePlayerTargetDataJob.ScheduleParallel(state.Dependency);
+            state.CompleteDependency();
+        }
+    }
+}
+</code></pre><h2 id="conclusion">Conclusion</h2>
+<p>And that pretty much does it! The last two thing you have to do are make sure that you drag in the actual camera gameobject into the exposed field on the Hybrid Camera Manager and also ensure that you&rsquo;ve added the relevant authoring script (Auth_PlayerCameraTarget, in my case) to your player character.</p>
 
 		</section>
 
