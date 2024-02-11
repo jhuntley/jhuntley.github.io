@@ -38,7 +38,7 @@ The work has currently gone through a round of beta readers and has been read by
 
 ## Closing thoughts
 
-Very excited to share further updates on the projects listed above. Once the Unity game project is further along, I'm looking forward revealing some of the game's features and some of the great art that has already been created for it.
+Very excited to share further updates on the projects listed above. Once the Unity game project is further along, I'm looking forward to revealing some of the game's features and some of the great art that has already been created for it.
 
 I also hope to document some of my rust and C# learnings throughfuture posts here. More to come!
 
