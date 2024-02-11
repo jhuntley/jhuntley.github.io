@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html><head lang="en">
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Netcode for Entities - Spawning Player Cameras - jhuntley.github.io</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="A short post detailing how to spawn cameras for individual players in Unity using their Entity Component System and Netcode for Entities" />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="Netcode for Entities - Spawning Player Cameras" />
+<meta property="og:description" content="A short post detailing how to spawn cameras for individual players in Unity using their Entity Component System and Netcode for Entities" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://jhuntley.github.io/posts/unity_netcode_camera/" /><meta property="article:section" content="posts" />
+
+
+
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Netcode for Entities - Spawning Player Cameras"/>
+<meta name="twitter:description" content="A short post detailing how to spawn cameras for individual players in Unity using their Entity Component System and Netcode for Entities"/>
+
+	
+        <link href="https://jhuntley.github.io/css/fonts.11a1877508139eac0b5b4852ceb110c35641b3533321e66e39149e901ed5756b.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="https://jhuntley.github.io/css/main.d902908ac6e0fab67957de5db5aea1b6455b19ae2ca98eac4c95a4a0fdc02238.css" />
+
+	
+	
+
+	
+	
+	
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="https://jhuntley.github.io/">jhuntley.github.io</a>
+	</div>
+	<nav>
+		
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">Netcode for Entities - Spawning Player Cameras</h1>
+			<div class="meta">Posted on Jan 1, 0001</div>
+		</div>
+		
+
+		<section class="body">
+			<h1 id="leveraging-unitys-megacity-multiplayer-sample">Leveraging Unity&rsquo;s Megacity Multiplayer Sample</h1>
+<p>After struggling to implement my own solution, I decided to dive into Unity&rsquo;s Megacity Multiplayer sample and see if there was anything in there that might be able to help me get the cameras running. It took me a little while to wrap my head around the codebase, but it turns out thay they were using a hybrid solution that was quite similar to what I had tried. The key difference, however, was that instead of trying to pass a singleton information about the players (my attempted solution), the unity developers let an ISystem paired with an IJobEntity pass information via a singleton &ndash; the Hybrid Camera Manager.</p>
+<h1 id="first-steps">First Steps</h1>
+<p>The first step to get this rolling is to make sure there&rsquo;s actually a component available that the IJobEntity job mentioned above can find. I&rsquo;ve gone ahead and named this component PlayerCameraTarget (following the sample), as it will store the current player data for the camera.</p>
+<p>The next step is to create the ISystem script (PlayerCameraTargetUpdated) that will grab the component PlayerCameraTarget as a singleton (only one per client) and pass its information on to the Hybrid Camera Manager. Here is the script in question:</p>
+<pre tabindex="0"><code>using Unity.Burst;
+using Unity.Entities;
+using Unity.Transforms;
+
+namespace Unity.Megacity.CameraManagement
+{
+    /// &lt;summary&gt;
+    /// Updates player camera target position and rotation
+    /// &lt;/summary&gt;
+    [BurstCompile]
+    [UpdateAfter(typeof(TransformSystemGroup))]
+    [WorldSystemFilter(WorldSystemFilterFlags.LocalSimulation | WorldSystemFilterFlags.ClientSimulation)]
+    public partial struct PlayerCameraTargetUpdater : ISystem
+    {
+        public EntityQuery m_CameraTarget;
+        public void OnCreate(ref SystemState state)
+        {
+            m_CameraTarget = state.GetEntityQuery(ComponentType.ReadOnly&lt;PlayerCameraTarget&gt;(),ComponentType.ReadOnly&lt;LocalToWorld&gt;());
+            state.RequireForUpdate(m_CameraTarget);
+        }
+
+        public void OnUpdate(ref SystemState state)
+        {
+            var cameraTarget = SystemAPI.GetSingleton&lt;PlayerCameraTarget&gt;();
+            var deltaTime = state.WorldUnmanaged.Time.DeltaTime;
+            
+            if (!HybridCameraManager.Instance.IsCameraReady)
+                HybridCameraManager.Instance.PlaceCamera(cameraTarget.Position);
+            
+            HybridCameraManager.Instance.SetPlayerCameraPosition(cameraTarget.Position, deltaTime);
+            HybridCameraManager.Instance.SetPlayerCameraRotation(cameraTarget.Rotation, deltaTime);
+        }
+    }
+}
+</code></pre><p>Once that script has been created, then we can move ahead and create the actual Hybrid Camera Manager. The Unity version of this script contains far more features than I need. Here is my modified version of the code:</p>
+<pre tabindex="0"><code>using System;
+using Unity.Mathematics;
+using UnityEngine;
+
+namespace Pool
+{
+    /// &lt;summary&gt;
+    /// Create camera target authoring component in order to
+    /// allow the game object camera to follow the player camera target entity
+    /// &lt;/summary&gt;
+    public class HybridCameraManager : MonoBehaviour
+    {
+        
+        [SerializeField]
+        private float m_TargetFollowDamping = 5.0f;
+        [SerializeField]
+        private Transform m_PlayerCameraTarget;
+        [SerializeField] 
+        private GameObject m_AutopilotCamera;
+        
+        public bool IsCameraReady { private set; get; }
+
+        public static HybridCameraManager Instance;
+    
+        private void Awake()
+        {
+            if (Instance != null)
+            {
+                IsCameraReady = false;
+                Destroy(gameObject);
+            }
+            else
+            {
+                Instance = this;
+            }
+        }
+
+        public void SetPlayerCameraPosition(float3 position, float deltaTime)
+        {
+            m_PlayerCameraTarget.position = math.lerp(m_PlayerCameraTarget.position, position, deltaTime * m_TargetFollowDamping);
+        }
+
+        public void SetPlayerCameraRotation(quaternion rotation, float deltaTime)
+        {
+            m_PlayerCameraTarget.rotation =
+                math.slerp(m_PlayerCameraTarget.rotation, rotation, deltaTime * m_TargetFollowDamping);
+        }
+        
+        public void Reset()
+        {
+            IsCameraReady = false;
+            m_AutopilotCamera.gameObject.SetActive(false);
+        }
+
+        public void PlaceCamera(float3 position)
+        {
+            m_PlayerCameraTarget.position = position;
+            IsCameraReady = true;
+        }
+    }
+}
+</code></pre><h2 id="intermission">Intermission</h2>
+<p>Alright, so we&rsquo;ve created three pieces of code now: 1) the PlayerCameraTarget component that will position and rotation information that 2) the ISystem PlayerCameraTargetUpdated will search for and then pass on to 3) the Hybrid Camera Manager (HCM) singleton that exposes two key functions: SetPlayerCameraPosition and SetPlayerCameraRotation. Those functions, when called via the HCM singleton, will update the transform of a camera that is tethered to the player in question.</p>
+
+		</section>
+
+		<div class="post-tags">
+			
+			
+			
+		</div>
+		</article>
+</main>
+<footer>
+  <div style="display:flex"></div>
+  <div class="footer-info">
+    2024  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+
+
+</div>
+    </body>
+</html>
