@@ -2,9 +2,13 @@
 title: Netcode for Entities - Spawning Player Cameras 
 description: A short post detailing how to spawn cameras for individual players in Unity using their Entity Component System and Netcode for Entities
 date: "2024-02-11T13:43:40"
-draft: false
+draft: true
 tags: 
 ---
+
+# Introduction
+
+What follows is a short blog post that provides a rough overview for how to implement a camera for each individual player within a Unity ECS (Entiy Component System) framework. The challenge with doing anything within Unity's ECS framework, and especially multiplayer, is that most solutions require that the ECS part of your code communicate with the traditional MonoBehaviour side. In the future, this shouldn't be the casem as Unity (from what I've read) plans to continue to translate more and more traditional MonoBehavior features into ECS, but for now a hybrid solution is the reality.
 
 # Leveraging Unity's Megacity Multiplayer Sample
 
@@ -12,7 +16,29 @@ After struggling to implement my own solution, I decided to dive into Unity's Me
 
 # First Steps
 
-The first step to get this rolling is to make sure there's actually a component available that the IJobEntity job mentioned above can find. I've gone ahead and named this component PlayerCameraTarget (following the sample), as it will store the current player data for the camera.
+The first step to get this rolling is to make sure there's actually a component available that the IJobEntity job mentioned above can find. I've gone ahead and named this component PlayerCameraTarget (following the sample), as it will store the current player data for the camera:
+
+```
+using Unity.Entities;
+using Unity.Mathematics;
+using Unity.NetCode;
+
+namespace Unity.Megacity.CameraManagement
+{
+    /// <summary>
+    /// Update the hybrid camera target with player position camera target in order for the virtual camera to follow it
+    /// </summary>
+    [GhostComponent(PrefabType = GhostPrefabType.PredictedClient)]
+    public struct PlayerCameraTarget : IComponentData
+    {
+        public float3 PositionOffset;
+        public float3 Position;
+        public quaternion Rotation;
+    }
+}
+```
+
+Note the GhostCompenent attribute attached to the component. This is key. In my understanding, this attribute specifies that this component will only 
 
 The next step is to create the ISystem script (PlayerCameraTargetUpdated) that will grab the component PlayerCameraTarget as a singleton (only one per client) and pass its information on to the Hybrid Camera Manager. Here is the script in question:
 
