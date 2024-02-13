@@ -14,11 +14,11 @@ Another challenge was that I'd already done a significant amount of coding befor
 
 *Gnarly?* you might ask. *What's so difficult about adding multiplayer code in at a later date*. My hunch is that there's countless youtube videos explaining this in great detail, but from my direct experience one of the major challenges was the emergence of *false negatives* -- that is, code this is actually working (at least a part of it), but gains the appearance of *not working* because of other scripts / systems medling with the presentation or the underlying logic.
 
-In the case of the cameras, this looked like a system we use for detecting the camera facing direction giving the appearance that there weren't unique cameras in the scene. To flesh things out, I was trying to get make it so that a unique camera would spawn for eachplayer as they joined the game, but when I went to test the code, it appeared as if the camera *wasn't unique* because of the mouse facing system. It was a false negative, one that obscured the fact that the underlying camera creation code was indeed working.
+In the case of the cameras, this looked like a system we use for detecting the camera facing direction giving the appearance that there weren't unique cameras in the scene. To flesh things out, I was trying to make it so that a unique camera would spawn for each player as they joined the game, but when I went to test the code, it appeared as if the camera *wasn't unique* because of the mouse facing system. It was a false negative, one that obscured the fact that the underlying camera creation code was indeed working.
 
 I'll be the first to admit it: I probably should've clued into this sooner than I did, but at the same time I was testing multiple solutions and trying to wrap my head around a lot of concepts. It was really easy just to check the 'failed solution' box in my brain and move on to the next idea. There were other problems with that solution as well that I won't go into, but ultimatley it ended up working when we returned to it and gave it another shot (this time following the Megacity sample in using a Cinemachine).
 
-I hestitate to label what follows a tutorial as it's very bare bones, but I'm going to past it any way just for the sake of completeness. One note: this tutorial was written before I encountered the challenges, and so if you detect a note of naive optimism you would not be mistaken. I offer a few more reflections in the conclusion.
+I hestitate to label what follows a tutorial as it's very bare bones, but I'm going to keep it in any way just for the sake of completeness. One note: this tutorial was written before I encountered the challenges, and so if you detect a note of naive optimism you would not be mistaken. *I strongly suggest using the code that follows as a mere taking off point*. I offer a few more reflections in the conclusion.
 
 
 # Leveraging Unity's Megacity Multiplayer Sample
@@ -49,7 +49,7 @@ namespace Unity.Megacity.CameraManagement
 }
 ```
 
-Note the GhostCompenent attribute attached to the component. This is key. In my understanding, this attribute specifies that this component will only 
+Note the GhostComponent attribute attached to the component. This is key. In my understanding, this attribute specifies that the client should both simulate and predict the the behaviour of the entity attached to this component. More specifically, it tells the server and client that this component will be subject to regular updates and that the data predicated by the client (to help with smoothing) might need to be overwritten by the server data if there's a contradiction. 
 
 The next step is to create the ISystem script (PlayerCameraTargetUpdated) that will grab the component PlayerCameraTarget as a singleton (only one per client) and pass its information on to the Hybrid Camera Manager. Here is the script in question:
 
