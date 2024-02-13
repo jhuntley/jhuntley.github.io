@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html><head lang="en">
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>A Simple Circle - jhuntley.github.io</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="A short tutorial on making drawing a circle using bevy." />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="A Simple Circle" />
+<meta property="og:description" content="A short tutorial on making drawing a circle using bevy." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://jhuntley.github.io/posts/a_simple_circle/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-02-06T13:43:40+00:00" />
+<meta property="article:modified_time" content="2024-02-06T13:43:40+00:00" />
+
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="A Simple Circle"/>
+<meta name="twitter:description" content="A short tutorial on making drawing a circle using bevy."/>
+
+	
+        <link href="https://jhuntley.github.io/css/fonts.11a1877508139eac0b5b4852ceb110c35641b3533321e66e39149e901ed5756b.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="https://jhuntley.github.io/css/main.d902908ac6e0fab67957de5db5aea1b6455b19ae2ca98eac4c95a4a0fdc02238.css" />
+
+	
+	
+
+	
+	
+	
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="https://jhuntley.github.io/">jhuntley.github.io</a>
+	</div>
+	<nav>
+		
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">A Simple Circle</h1>
+			<div class="meta">Posted on Feb 6, 2024</div>
+		</div>
+		
+
+		<section class="body">
+			<h1 id="your-first-bevy-circle">Your First Bevy Circle</h1>
+<p>After one mangled attempt to do something far more grand, I&rsquo;ve decided to pare things down and go after some easy prey: drawing a circle. <em>Audience gasps</em>. Do I dare attempt such a feat? Yes, yes I do &ndash; and I&rsquo;m going to make it even easier: I&rsquo;m going to use <a href="https://bevyengine.org/examples/2D%20Rendering/2d-shapes/">some the sample code contained on the Bevy website</a>.</p>
+<p>Really, a better name for this post would&rsquo;ve been &lsquo;Starting Your First Bevy Project&rsquo; or something like that, but we&rsquo;ve already come this far so lets keep the ball rolling.</p>
+<h1 id="your-first-bevy-project">Your First Bevy Project</h1>
+<p>Perhaps this isn&rsquo;t your first Bevy project, but I figured I would spend a quick second detailing how to do that before moving ahead. I highly recommend that you make use of cargo&rsquo;s built-in &rsquo;new&rsquo; command that allows for the automatic generation of a new project:</p>
+<p>Navigate to the folder you want to create your project and and then from the command line type:</p>
+<pre tabindex="0"><code>cargo new project_name
+</code></pre><p>As mentioned above, this line of command will cause cargo (Bevy&rsquo;s package (crate) manager) to automatically create all the base files necessary to get a project off the ground. Inside your created project directory, you should now see a cargo.toml file, which we&rsquo;ll touch on in just a second, and a folder named &lsquo;src&rsquo; that contains your main.rs (that&rsquo;s where we&rsquo;ll be writing some code).</p>
+<p>Quickly though, the cargo.toml file is your project&rsquo;s configuration file. If you look inside you should see something like this:</p>
+<pre tabindex="0"><code>[package]
+name = &#34;rpg&#34;
+version = &#34;0.1.0&#34;
+edition = &#34;2021&#34;
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bevy = &#34;0.12.1&#34;
+</code></pre><p>Nothing too fancy: a name, version, and edition year followed by a list of dependencies. One thing to note is that I didn&rsquo;t manually add that listing for Bevy to my cargo.toml file. Cargo did that for me when I wrote the following command:</p>
+<pre tabindex="0"><code>cargo add bevy
+</code></pre><p>Make sure you&rsquo;re within your project&rsquo;s main directory, but it should be as easy as that. Your cargo.toml file should now include a reference to bevy under the &lsquo;[dependencies]&rsquo;. If it didn&rsquo;t add it there for whatever reason, you should be able to add it manually and on your next recompile it should be listed.</p>
+<h2 id="its-circle-drawin-time">It&rsquo;s Circle Drawin&rsquo; Time</h2>
+<p>Buckle up, because things are about to get wild. A fresh new piece of geometry is about to enter the world. Open up your main.rs (located in your &lsquo;src&rsquo; folder) and let&rsquo;s with a few simple lines:</p>
+<pre tabindex="0"><code>use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
+
+fn main()
+{
+    App::new()
+        .add_plugins(DefaultPlugins)
+        .add_systems(Startup, setup)
+        .run();
+}
+</code></pre><p>The first line tells the compiler that we&rsquo;re going to be using the bevy package in this script as well as the MaterialMesh2dBundle from Bevy&rsquo;s sprite package. Note: Bundles are pretty cool &ndash; they&rsquo;re pretty much just built-in templates that you can use to easily spawn various entities.</p>
+<p>The next line is declare our main function which contains an App::new() declaration with chained calls to add_plugins and add_systems. The add_plugins(DefaultPlugins) call provides essential featueres for game creation within the Bevy framework. The add_systems call contains two parameters: the first, Startup, dictates when the second parameter, &lsquo;setup&rsquo;, should be run; in this case, the setup function, which we will see right away, will be run at&hellip;you guessed: during Startup.</p>
+<p>Without further ado, the setup function (immediately follows fn main()):</p>
+<pre tabindex="0"><code>fn setup(
+    mut commands: Commands,
+    mut meshes: ResMut&lt;Assets&lt;Mesh&gt;&gt;,
+    mut materials: ResMut&lt;Assets&lt;ColorMaterial&gt;&gt;
+){
+    commands.spawn(Camera2dBundle::default());
+
+    commands.spawn(MaterialMesh2dBundle {
+        mesh: meshes.add(shape::Circle::new(50.).into()).into(),
+        material: materials.add(ColorMaterial::from(Color::PURPLE)),
+        transform: Transform::from_translation(Vec3::new(-150., 0., 0.)),
+        ..default()
+    });
+}
+</code></pre><p>There&rsquo;s a lot going on here! The setup function takes three parameters:</p>
+<ol>
+<li>
+<p>commands: Commands &ndash; As you can see from a line further down (commands.spawn), the commands argument is used to make things happen in Bevy world. You&rsquo;ll see commands used a lot in Bevy code because they do all of the heavy lifting: creating and destroying entities and components, and modifying component data. Bevy also automatically schedule these commands to run at the appropriate time.</p>
+</li>
+<li>
+<p>meshes: ResMut&lt;Assets<!-- raw HTML omitted -->&gt; &ndash; There&rsquo;s a few things going on here that are worth noting. First, we have a &lsquo;mesh&rsquo; type that&rsquo;s being turned into an asset and then a global, mutable resource. In other words, the mesh in question is being loaded by Bevy&rsquo;s asset loader and turned into an Assets<!-- raw HTML omitted --> and then it&rsquo;s being made into a global resource through the ResMut&lt;&gt; wrapper that allows various systems (including this one) to make use of it in their contained code.</p>
+</li>
+<li>
+<p>materials: ResMut&lt;Assets<!-- raw HTML omitted --> &ndash; Same as above, but this time a &lsquo;ColorMaterial&rsquo; resource is being created instead of a &lsquo;Mesh&rsquo;.</p>
+</li>
+</ol>
+<p>Well, that was already quite a bit! But we just have two &lsquo;commands.spawn&rsquo; calls left.</p>
+<p>The first:</p>
+<pre tabindex="0"><code>  commands.spawn(Camera2dBundle::default());
+</code></pre><p>Here&rsquo;s just a taste of Commands functionality. It&rsquo;s allowing us to spawn an entire 2D camera bundle in order for us to look at the circle that we&rsquo;re eventually going to draw (next paragraph!).</p>
+<pre tabindex="0"><code>commands.spawn(MaterialMesh2dBundle {
+        mesh: meshes.add(shape::Circle::new(50.).into()).into(),
+        material: materials.add(ColorMaterial::from(Color::PURPLE)),
+        transform: Transform::from_translation(Vec3::new(-150., 0., 0.)),
+        ..default()
+    });
+</code></pre><p>And here it is, the final function call. As arguments, commands.spawn is passing in the MaterialMesh2dBundle that we saw from earlier, which itself is composed of a mesh (a shape), material (color), and a transform (position, rotation, scale).</p>
+<ol>
+<li>
+<p>Mesh: we&rsquo;re passing in your meshes argument (remember ResMut&lt;Assets<!-- raw HTML omitted -->&gt;) and calling the .add function. Inside this function we&rsquo;re using one of Bevy&rsquo;s default shapes (shape::Circle) and making a &rsquo;new&rsquo; one with a radius of 50. The double .into() calls leverage Rust&rsquo;s built-in type inferencing to make the shape compatabile with its storage in ResMut&lt;Assets<!-- raw HTML omitted -->&gt;.</p>
+</li>
+<li>
+<p>Material: once again, we&rsquo;re passing in an argument we saw above. This time it&rsquo;s our materials argument (ResMut&lt;Assets<!-- raw HTML omitted -->&gt;). Same as with the .add call above, we&rsquo;re leveraging Rust&rsquo;s provided plugins to create a new ColorMaterial that&rsquo;s of the color purple.</p>
+</li>
+<li>
+<p>Transform: this one is different than the last two, as we didn&rsquo;t pass in any arguments that will go into this line. Instead, we&rsquo;re tapping into Bevy&rsquo;s Transform framework to create a new transform from a translation that will be supplied by a Vec3 (Vector3): Vec3::new(-150., 0., 0.)).</p>
+</li>
+</ol>
+<p><em>And that&rsquo;s it!</em> There&rsquo;s nothing more to it, save for running the program and seeing the output:</p>
+<pre tabindex="0"><code>cargo run
+</code></pre><p>Type that command into your IDE&rsquo;s terminal, or manually in the command line. You should see something like this:</p>
+<p>(A circle!)[C:\jhuntley.github.io\assets\pictures\first_circle.png]</p>
+<p>Pretty cool, right? Obviously, it doesn&rsquo;t do much yet, but hopefully we can squeeze a bit more dynamism out of Bevy in future delvings.</p>
+
+		</section>
+
+		<div class="post-tags">
+			
+			
+			
+		</div>
+		</article>
+</main>
+<footer>
+  <div style="display:flex"></div>
+  <div class="footer-info">
+    2024  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+
+
+</div>
+    </body>
+</html>
