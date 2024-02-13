@@ -8,7 +8,7 @@ tags:
 
 # Your First Bevy Circle
 
-After one mangled attempt to do something far more grand, I've decided to pare things down and go after some easy prey: drawing a circle. *Audience gasps*. Do I dare attempt such a feat? Yes, yes I do -- and I'm going to make it even easier: I'm going to use [some the sample code contained on the Bevy website](https://bevyengine.org/examples/2D%20Rendering/2d-shapes/).
+After one mangled attempt to do something far more grand, I've decided to pare things down and go after some easy prey: drawing a circle. *Audience gasps*. Do I dare attempt such a feat? Yes, yes I do -- and I'm going to make it even easier: I'm going to use of [some of the sample code contained on the Bevy website](https://bevyengine.org/examples/2D%20Rendering/2d-shapes/).
 
 Really, a better name for this post would've been 'Starting Your First Bevy Project' or something like that, but we've already come this far so lets keep the ball rolling.
 
@@ -128,6 +128,6 @@ cargo run
 
 Type that command into your IDE's terminal, or manually in the command line. You should see something like this:
 
-(A circle!)[C:\jhuntley.github.io\assets\pictures\first_circle.png]
+(A circle!)[../first_circle.png]
 
 Pretty cool, right? Obviously, it doesn't do much yet, but hopefully we can squeeze a bit more dynamism out of Bevy in future delvings. 
