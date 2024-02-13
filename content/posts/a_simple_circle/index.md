@@ -128,6 +128,6 @@ cargo run
 
 Type that command into your IDE's terminal, or manually in the command line. You should see something like this:
 
-(A circle!)[../first_circle.png]
+![A circle!](/first_circle.png)
 
 Pretty cool, right? Obviously, it doesn't do much yet, but hopefully we can squeeze a bit more dynamism out of Bevy in future delvings. 
