@@ -6,8 +6,15 @@
     <description>Recent content on jhuntley.github.io</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 11 Feb 2024 13:43:40 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 13 Feb 2024 13:43:40 +0000</lastBuildDate>
     <atom:link href="https://jhuntley.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>A Simple Circle</title>
+      <link>https://jhuntley.github.io/posts/a_simple_circle/</link>
+      <pubDate>Tue, 13 Feb 2024 13:43:40 +0000</pubDate>
+      <guid>https://jhuntley.github.io/posts/a_simple_circle/</guid>
+      <description>Your First Bevy Circle After one mangled attempt to do something far more grand, I&amp;rsquo;ve decided to pare things down and go after some easy prey: drawing a circle. Audience gasps. Do I dare attempt such a feat? Yes, yes I do &amp;ndash; and I&amp;rsquo;m going to make it even easier: I&amp;rsquo;m going to use of some of the sample code contained on the Bevy website.&#xA;Really, a better name for this post would&amp;rsquo;ve been &amp;lsquo;Starting Your First Bevy Project&amp;rsquo; or something like that, but we&amp;rsquo;ve already come this far so lets keep the ball rolling.</description>
+    </item>
     <item>
       <title>Netcode for Entities - Spawning Player Cameras</title>
       <link>https://jhuntley.github.io/posts/unity_netcode_camera/</link>
