@@ -49,10 +49,35 @@
 		
 
 		<section class="body">
-			<h1 id="leveraging-unitys-megacity-multiplayer-sample">Leveraging Unity&rsquo;s Megacity Multiplayer Sample</h1>
+			<h1 id="introduction">Introduction</h1>
+<p>I originally wrote this post with the idea that it would provide a short tutorial on camera creation within the Unity Netcode for Entities (ECS) framework. Ideas, of course, are just that &ndash; <em>ideas</em> &ndash; and creating the cameras and getting them working turned out to be both a far larger (and in the end, far simpler) problem than I initially imagined. Part of the problem was that I was trying to wrap my head around both a new conceptual territory (network programming) and a new framework (Netcode for Entities), which made it difficult to pick out core concepts and to scaffold my learning in a way that felt scalable and structured.</p>
+<p>Another challenge was that I&rsquo;d already done a significant amount of coding before adding the multiplayer code into the game. Even though I waited for a few weeks to add the multiplayer code, I&rsquo;d already created large segments of gameplay. With that said, I&rsquo;m grateful that I didn&rsquo;t wait any longer and that I did jump in and add it when I did, because I know the territory could&rsquo;ve become far more gnarly.</p>
+<p><em>Gnarly?</em> you might ask. <em>What&rsquo;s so difficult about adding multiplayer code in at a later date</em>. My hunch is that there&rsquo;s countless youtube videos explaining this in great detail, but from my direct experience one of the major challenges was the emergence of <em>false negatives</em> &ndash; that is, code this is actually working (at least a part of it), but gains the appearance of <em>not working</em> because of other scripts / systems medling with the presentation or the underlying logic.</p>
+<p>In the case of the cameras, this looked like a system we use for detecting the camera facing direction giving the appearance that there weren&rsquo;t unique cameras in the scene. To flesh things out, I was trying to get make it so that a unique camera would spawn for eachplayer as they joined the game, but when I went to test the code, it appeared as if the camera <em>wasn&rsquo;t unique</em> because of the mouse facing system. It was a false negative, one that obscured the fact that the underlying camera creation code was indeed working.</p>
+<p>I&rsquo;ll be the first to admit it: I probably should&rsquo;ve clued into this sooner than I did, but at the same time I was testing multiple solutions and trying to wrap my head around a lot of concepts. It was really easy just to check the &lsquo;failed solution&rsquo; box in my brain and move on to the next idea. There were other problems with that solution as well that I won&rsquo;t go into, but ultimatley it ended up working when we returned to it and gave it another shot (this time following the Megacity sample in using a Cinemachine).</p>
+<p>I hestitate to label what follows a tutorial as it&rsquo;s very bare bones, but I&rsquo;m going to past it any way just for the sake of completeness. One note: this tutorial was written before I encountered the challenges, and so if you detect a note of naive optimism you would not be mistaken. I offer a few more reflections in the conclusion.</p>
+<h1 id="leveraging-unitys-megacity-multiplayer-sample">Leveraging Unity&rsquo;s Megacity Multiplayer Sample</h1>
 <p>After struggling to implement my own solution, I decided to dive into Unity&rsquo;s Megacity Multiplayer sample and see if there was anything in there that might be able to help me get the cameras running. It took me a little while to wrap my head around the codebase, but it turns out thay they were using a hybrid solution that was quite similar to what I had tried. The key difference, however, was that instead of trying to pass a singleton information about the players (my attempted solution), the unity developers let an ISystem paired with an IJobEntity pass information via a singleton &ndash; the Hybrid Camera Manager.</p>
 <h1 id="first-steps">First Steps</h1>
-<p>The first step to get this rolling is to make sure there&rsquo;s actually a component available that the IJobEntity job mentioned above can find. I&rsquo;ve gone ahead and named this component PlayerCameraTarget (following the sample), as it will store the current player data for the camera.</p>
+<p>The first step to get this rolling is to make sure there&rsquo;s actually a component available that the IJobEntity job mentioned above can find. I&rsquo;ve gone ahead and named this component PlayerCameraTarget (following the sample), as it will store the current player data for the camera:</p>
+<pre tabindex="0"><code>using Unity.Entities;
+using Unity.Mathematics;
+using Unity.NetCode;
+
+namespace Unity.Megacity.CameraManagement
+{
+    /// &lt;summary&gt;
+    /// Update the hybrid camera target with player position camera target in order for the virtual camera to follow it
+    /// &lt;/summary&gt;
+    [GhostComponent(PrefabType = GhostPrefabType.PredictedClient)]
+    public struct PlayerCameraTarget : IComponentData
+    {
+        public float3 PositionOffset;
+        public float3 Position;
+        public quaternion Rotation;
+    }
+}
+</code></pre><p>Note the GhostCompenent attribute attached to the component. This is key. In my understanding, this attribute specifies that this component will only</p>
 <p>The next step is to create the ISystem script (PlayerCameraTargetUpdated) that will grab the component PlayerCameraTarget as a singleton (only one per client) and pass its information on to the Hybrid Camera Manager. Here is the script in question:</p>
 <pre tabindex="0"><code>using Unity.Burst;
 using Unity.Entities;
@@ -193,6 +218,10 @@ namespace Unity.Megacity.CameraManagement
 }
 </code></pre><h2 id="conclusion">Conclusion</h2>
 <p>And that pretty much does it! The last two thing you have to do are make sure that you drag in the actual camera gameobject into the exposed field on the Hybrid Camera Manager and also ensure that you&rsquo;ve added the relevant authoring script (Auth_PlayerCameraTarget, in my case) to your player character.</p>
+<h2 id="updated-conclusion">Updated Conclusion</h2>
+<p>Well, after I wrote the lines above, I spent an ungodly number of hours trying to get the code to actually work, as hinted at in the introduction to this piece. Thankfully, my brother (the co-developer and artist-extraodinaire on this project) rolled up his sleeves and did his own implementation of the Unity Megacity code. Thankfully, thankfully, it worked. From our brief discussion, it appeared that using a virtual Cinemachine (just like the Unity project) alleviated some of the issues. He also picked up on the bug with the mouse facing system that was distorting the camera view.</p>
+<p>What else to say? For myself, I think moving forward I&rsquo;m going to spend more time making sure I accurately and fully understand the problem at hand before casting aside potential solutions. I&rsquo;m also going to be implementing multiplayer code from the start in any future projects &ndash; it isn&rsquo;t the most appealing way to start a project, but I&rsquo;d rather that than a day of headaches.</p>
+<p>I hope your camera implementation journeys go far better than mine!</p>
 
 		</section>
 

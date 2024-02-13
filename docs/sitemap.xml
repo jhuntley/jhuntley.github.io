@@ -2,13 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://jhuntley.github.io/posts/game_of_life/</loc>
-    <lastmod>2024-02-08T13:43:40+00:00</lastmod>
-  </url><url>
     <loc>https://jhuntley.github.io/</loc>
-    <lastmod>2024-02-08T13:43:40+00:00</lastmod>
+    <lastmod>2024-02-11T13:43:40+00:00</lastmod>
+  </url><url>
+    <loc>https://jhuntley.github.io/posts/unity_netcode_camera/</loc>
+    <lastmod>2024-02-11T13:43:40+00:00</lastmod>
   </url><url>
     <loc>https://jhuntley.github.io/posts/</loc>
+    <lastmod>2024-02-11T13:43:40+00:00</lastmod>
+  </url><url>
+    <loc>https://jhuntley.github.io/posts/game_of_life/</loc>
     <lastmod>2024-02-08T13:43:40+00:00</lastmod>
   </url><url>
     <loc>https://jhuntley.github.io/posts/first_post/</loc>

@@ -2,13 +2,24 @@
 title: Netcode for Entities - Spawning Player Cameras 
 description: A short post detailing how to spawn cameras for individual players in Unity using their Entity Component System and Netcode for Entities
 date: "2024-02-11T13:43:40"
-draft: true
+draft: false
 tags: 
 ---
 
 # Introduction
 
-What follows is a short blog post that provides a rough overview for how to implement a camera for each individual player within a Unity ECS (Entiy Component System) framework. The challenge with doing anything within Unity's ECS framework, and especially multiplayer, is that most solutions require that the ECS part of your code communicate with the traditional MonoBehaviour side. In the future, this shouldn't be the casem as Unity (from what I've read) plans to continue to translate more and more traditional MonoBehavior features into ECS, but for now a hybrid solution is the reality.
+I originally wrote this post with the idea that it would provide a short tutorial on camera creation within the Unity Netcode for Entities (ECS) framework. Ideas, of course, are just that -- *ideas* -- and creating the cameras and getting them working turned out to be both a far larger (and in the end, far simpler) problem than I initially imagined. Part of the problem was that I was trying to wrap my head around both a new conceptual territory (network programming) and a new framework (Netcode for Entities), which made it difficult to pick out core concepts and to scaffold my learning in a way that felt scalable and structured.
+
+Another challenge was that I'd already done a significant amount of coding before adding the multiplayer code into the game. Even though I waited for a few weeks to add the multiplayer code, I'd already created large segments of gameplay. With that said, I'm grateful that I didn't wait any longer and that I did jump in and add it when I did, because I know the territory could've become far more gnarly. 
+
+*Gnarly?* you might ask. *What's so difficult about adding multiplayer code in at a later date*. My hunch is that there's countless youtube videos explaining this in great detail, but from my direct experience one of the major challenges was the emergence of *false negatives* -- that is, code this is actually working (at least a part of it), but gains the appearance of *not working* because of other scripts / systems medling with the presentation or the underlying logic.
+
+In the case of the cameras, this looked like a system we use for detecting the camera facing direction giving the appearance that there weren't unique cameras in the scene. To flesh things out, I was trying to get make it so that a unique camera would spawn for eachplayer as they joined the game, but when I went to test the code, it appeared as if the camera *wasn't unique* because of the mouse facing system. It was a false negative, one that obscured the fact that the underlying camera creation code was indeed working.
+
+I'll be the first to admit it: I probably should've clued into this sooner than I did, but at the same time I was testing multiple solutions and trying to wrap my head around a lot of concepts. It was really easy just to check the 'failed solution' box in my brain and move on to the next idea. There were other problems with that solution as well that I won't go into, but ultimatley it ended up working when we returned to it and gave it another shot (this time following the Megacity sample in using a Cinemachine).
+
+I hestitate to label what follows a tutorial as it's very bare bones, but I'm going to past it any way just for the sake of completeness. One note: this tutorial was written before I encountered the challenges, and so if you detect a note of naive optimism you would not be mistaken. I offer a few more reflections in the conclusion.
+
 
 # Leveraging Unity's Megacity Multiplayer Sample
 
@@ -195,3 +206,11 @@ namespace Unity.Megacity.CameraManagement
 ## Conclusion
 
 And that pretty much does it! The last two thing you have to do are make sure that you drag in the actual camera gameobject into the exposed field on the Hybrid Camera Manager and also ensure that you've added the relevant authoring script (Auth_PlayerCameraTarget, in my case) to your player character.
+
+## Updated Conclusion
+
+Well, after I wrote the lines above, I spent an ungodly number of hours trying to get the code to actually work, as hinted at in the introduction to this piece. Thankfully, my brother (the co-developer and artist-extraodinaire on this project) rolled up his sleeves and did his own implementation of the Unity Megacity code. Thankfully, thankfully, it worked. From our brief discussion, it appeared that using a virtual Cinemachine (just like the Unity project) alleviated some of the issues. He also picked up on the bug with the mouse facing system that was distorting the camera view.
+
+What else to say? For myself, I think moving forward I'm going to spend more time making sure I accurately and fully understand the problem at hand before casting aside potential solutions. I'm also going to be implementing multiplayer code from the start in any future projects -- it isn't the most appealing way to start a project, but I'd rather that than a day of headaches.
+
+I hope your camera implementation journeys go far better than mine!

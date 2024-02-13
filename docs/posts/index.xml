@@ -6,8 +6,15 @@
     <description>Recent content in Posts on jhuntley.github.io</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 08 Feb 2024 13:43:40 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 11 Feb 2024 13:43:40 +0000</lastBuildDate>
     <atom:link href="https://jhuntley.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Netcode for Entities - Spawning Player Cameras</title>
+      <link>https://jhuntley.github.io/posts/unity_netcode_camera/</link>
+      <pubDate>Sun, 11 Feb 2024 13:43:40 +0000</pubDate>
+      <guid>https://jhuntley.github.io/posts/unity_netcode_camera/</guid>
+      <description>Introduction I originally wrote this post with the idea that it would provide a short tutorial on camera creation within the Unity Netcode for Entities (ECS) framework. Ideas, of course, are just that &amp;ndash; ideas &amp;ndash; and creating the cameras and getting them working turned out to be both a far larger (and in the end, far simpler) problem than I initially imagined. Part of the problem was that I was trying to wrap my head around both a new conceptual territory (network programming) and a new framework (Netcode for Entities), which made it difficult to pick out core concepts and to scaffold my learning in a way that felt scalable and structured.</description>
+    </item>
     <item>
       <title>Game of Life - Rust &#43; WebAssembly</title>
       <link>https://jhuntley.github.io/posts/game_of_life/</link>
